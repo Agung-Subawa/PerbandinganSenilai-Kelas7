@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Kuis Proporsi Matematika</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2196F3;
+            --secondary-color: #1976D2;
+            --accent-color: #E3F2FD;
+            --success-color: #4CAF50;
+            --warning-color: #FFC107;
+            --error-color: #F44336;
+            --background-color: #f0f4f8;
+        }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            transition: all 0.3s ease;
+        }
+        body { 
+            font-family: 'Arial', sans-serif; 
+            background-color: var(--background-color); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        .container { 
+            background: white; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+            width: 90%; 
+            max-width: 600px; 
+            padding: 30px; 
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        h1 { 
+            text-align: center; 
+            color: var(--primary-color); 
+            margin-bottom: 20px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .question { 
+            margin-bottom: 20px; 
+            padding: 15px; 
+            border: 1px solid #e0e0e0; 
+            border-radius: 8px; 
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .option { 
+            display: block; 
+            margin: 10px 0; 
+            padding: 12px 15px; 
+            border: 1px solid #ddd; 
+            border-radius: 6px; 
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+        }
+        .option:hover { 
+            background-color: var(--accent-color); 
+            border-color: var(--primary-color);
+        }
+        .option.selected { 
+            background-color: var(--primary-color); 
+            color: white; 
+            border-color: var(--secondary-color);
+        }
+        .option.correct { 
+            background-color: var(--success-color); 
+            color: white;
+        }
+        .option.wrong { 
+            background-color: var(--error-color); 
+            color: white;
+        }
+        #submitBtn, #restartBtn { 
+            width: 100%; 
+            padding: 12px; 
+            background-color: var(--primary-color); 
+            color: white; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        #submitBtn:hover, #restartBtn:hover { 
+            background-color: var(--secondary-color); 
+        }
+        #resultsPage { 
+            display: none; 
+            text-align: center; 
+        }
+        .score { 
+            font-size: 2.5em; 
+            color: var(--success-color); 
+            margin: 20px 0;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .progress {
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+        .timer {
+            text-align: right;
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+        .category {
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="quizPage" class="container">
+        <div class="timer" id="timer"><i class="fas fa-clock"></i> 05:00</div>
+        <div class="progress-bar">
+            <div class="progress" id="progressBar"></div>
+        </div>
+        <h1>Kuis Proporsi Matematika</h1>
+        <div id="questions"></div>
+        <button id="submitBtn" onclick="submitQuiz()">Selesai</button>
+    </div>
+
+    <div id="resultsPage" class="container">
+        <h1>Hasil Kuis</h1>
+        <p class="score" id="scoreDisplay"></p>
+        <p id="feedback"></p>
+        <button id="restartBtn" onclick="restartQuiz()">Ulangi Kuis</button>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                text: "Di sebuah kebun, perbandingan tanaman apel dan jeruk adalah 3:5. Jika ada 45 tanaman apel, berapa jumlah tanaman jeruk?",
+                category: "Matematika",
+                options: [70, 75, 80, 85],
+                correct: 75
+            },
+            {
+                text: "Seorang koki mencampur susu dan air dengan perbandingan 7:2. Jika dia memiliki 63 ml susu, berapa ml air yang dibutuhkan?",
+                category: "Matematika",
+                options: [18, 21, 24, 27],
+                correct: 18
+            },
+            {
+                text: "Dalam sebuah kelas, perbandingan siswa laki-laki dan perempuan adalah 4:5. Jika ada 28 siswa laki-laki, berapa jumlah siswa perempuan?",
+                category: "Matematika",
+                options: [35, 40, 45, 50],
+                correct: 35
+            },
+            {
+                text: "Sebuah pabrik memiliki perbandingan mesin produksi A dan B adalah 2:3. Jika ada 10 mesin A, berapa mesin B?",
+                category: "Matematika",
+                options: [14, 15, 16, 17],
+                correct: 15
+            },
+            {
+                text: "Campuran pewarna merah dan biru memiliki perbandingan 5:4. Jika 25 ml pewarna merah digunakan, berapa ml pewarna biru?",
+                category: "Matematika",
+                options: [20, 22, 24, 26],
+                correct: 20
+            },
+            {
+                text: "Dalam lomba lari, perbandingan waktu tempuh pelari A dan B adalah 3:2. Jika pelari A membutuhkan 18 menit, berapa menit waktu pelari B?",
+                category: "Matematika",
+                options: [12, 14, 16, 18],
+                correct: 12
+            },
+            {
+                text: "Sebuah peternakan memiliki perbandingan kambing dan sapi 5:7. Jika jumlah kambing 35 ekor, berapa ekor sapi?",
+                category: "Matematika",
+                options: [49, 52, 55, 58],
+                correct: 49
+            },
+            {
+                text: "Campuran garam dan air memiliki perbandingan 1:4. Jika 50 gram garam digunakan, berapa gram air?",
+                category: "Matematika",
+                options: [150, 200, 250, 300],
+                correct: 200
+            },
+            {
+                text: "Dalam sebuah tim, perbandingan pemain muda dan senior adalah 2:3. Jika 16 pemain muda, berapa pemain senior?",
+                category: "Matematika",
+                options: [24, 26, 28, 30],
+                correct: 24
+            },
+            {
+                text: "Sebuah tim proyek memiliki rasio manajer dan analis 3:5. Jika ada 9 manajer, berapa analis?",
+                category: "Matematika",
+                options: [14, 15, 16, 17],
+                correct: 15
+            }
+        ];
+
+        let selectedQuestions = [];
+        let userAnswers = {};
+        let timeLeft = 600; // 10 minutes
+        let timerInterval;
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function startTimer() {
+            const timerDisplay = document.getElementById('timer');
+            const progressBar = document.getElementById('progressBar');
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                
+                timerDisplay.innerHTML = `<i class="fas fa-clock"></i> ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                progressBar.style.width = `${(timeLeft / 600) * 100}%`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+
+        function generateQuiz() {
+            selectedQuestions = shuffleArray(questions).slice(0, 5);
+            const questionsContainer = document.getElementById('questions');
+            questionsContainer.innerHTML = '';
+
+            selectedQuestions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question');
+                questionDiv.innerHTML = `
+                    <h3>Soal ${index + 1} <span class="category">${q.category}</span></h3>
+                    <p>${q.text}</p>
+                    ${shuffleArray(q.options).map((opt, i) => `
+                        <div class="option" onclick="selectOption(${index}, ${opt})">
+                            ${opt}
+                        </div>
+                    `).join('')}
+                `;
+                questionsContainer.appendChild(questionDiv);
+            });
+
+            startTimer();
+        }
+
+        function selectOption(questionIndex, option) {
+            const options = document.querySelectorAll('.question')[questionIndex].querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            event.target.classList.add('selected');
+            userAnswers[questionIndex] = option;
+        }
+
+        function submitQuiz() {
+            clearInterval(timerInterval);
+            const score = calculateScore();
+            document.getElementById('quizPage').style.display = 'none';
+            document.getElementById('resultsPage').style.display = 'block';
+            
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const feedback = document.getElementById('feedback');
+            
+            scoreDisplay.textContent = `Skor: ${score}/5`;
+            
+            if (score === 5) {
+                feedback.innerHTML = "<i class='fas fa-trophy' style='color: gold;'></i> Sempurna! Anda ahli dalam proporsi!";
+            } else if (score >= 3) {
+                feedback.innerHTML = "<i class='fas fa-check-circle' style='color: green;'></i> Bagus! Tingkatkan lagi pemahamanmu.";
+            } else {
+                feedback.innerHTML = "<i class='fas fa-times-circle' style='color: red;'></i> Perlu lebih banyak latihan. Jangan menyerah!";
+            }
+
+            // Show correct answers
+            showCorrectAnswers();
+        }
+
+        function showCorrectAnswers() {
+            selectedQuestions.forEach((q, index) => {
+                const options = document.querySelectorAll('.question')[index].querySelectorAll('.option');
+                options.forEach(opt => {
+                    const optValue = parseInt(opt.textContent);
+                    if (optValue === q.correct) {
+                        opt.classList.add('correct');
+                    } else if (userAnswers[index] === optValue) {
+                        opt.classList.add('wrong');
+                    }
+                });
+            });
+        }
+
+        function calculateScore() {
+            let score = 0;
+            selectedQuestions.forEach((q, index) => {
+                if (userAnswers[index] === q.correct) score++;
+            });
+            return score;
+        }
+
+        function restartQuiz() {
+            document.getElementById('quizPage').style.display = 'block';
+            document.getElementById('resultsPage').style.display = 'none';
+            userAnswers = {};
+            timeLeft = 600;
+            generateQuiz();
+        }
+
+        // Initialize quiz
+        generateQuiz();
+    </script>
+</body>
+</html>

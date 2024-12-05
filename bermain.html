@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Perbandingan Senilai - Petualangan Matematika</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #2193b0, #6dd5ed);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            position: relative;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 30px;
+            cursor: pointer;
+            color: #aaa;
+        }
+
+        .lesson-detail, .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .lesson-card, .game-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .lesson-card:hover, .game-card:hover {
+            transform: translateY(-10px);
+            background: linear-gradient(45deg, #2193b0, #6dd5ed);
+            color: white;
+        }
+
+        .nav-menu {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .nav-button {
+            margin: 0 10px;
+            padding: 10px 15px;
+            background-color: #2193b0;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-button:hover {
+            background-color: #6dd5ed;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Game-specific styles */
+        .game-container {
+            background-color: #f4f4f4;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .game-question {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #2193b0;
+        }
+
+        .game-input {
+            padding: 10px;
+            margin: 10px;
+            border: 2px solid #2193b0;
+            border-radius: 5px;
+            width: 200px;
+        }
+
+        .game-button {
+            background-color: #2193b0;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        .game-feedback {
+            margin: 15px 0;
+            font-weight: bold;
+        }
+
+        .correct-feedback {
+            color: #4CAF50;
+        }
+
+        .incorrect-feedback {
+            color: #F44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🧮 Perbandingan Senilai Adventure</h1>
+        <p>Jelajahi Matematika Dengan Cara Menyenangkan!</p>
+    </div>
+
+    <div class="nav-menu">
+        <button class="nav-button" onclick="showPage('home')">Beranda</button>
+        <button class="nav-button" onclick="showPage('lessons')">Pelajaran</button>
+        <button class="nav-button" onclick="showPage('games')">Permainan</button>
+        <button class="nav-button" onclick="showPage('quiz')">Kuis</button>
+        <button class="nav-button" onclick="showPage('profile')">Profil</button>
+    </div>
+
+    <!-- Beranda (Home) Section -->
+    <div id="home" class="page active">
+        <div class="card">
+            <h2>👋 Selamat Datang, Matematikawan Muda!</h2>
+            <p>Mari kita memulai petualangan matematika yang seru dengan konsep Perbandingan Senilai!</p>
+        </div>
+    </div>
+
+    <!-- Lessons Section -->
+    <div id="lessons" class="page">
+        <div class="card">
+            <h2>📖 Pelajaran Perbandingan Senilai</h2>
+            <div class="lesson-detail">
+                <div class="lesson-card" onclick="openLessonDetail('konsep-dasar')">
+                    <h3>Konsep Dasar</h3>
+                    <p>Pengenalan perbandingan senilai</p>
+                    <small>Level: Pemula</small>
+                </div>
+                <div class="lesson-card" onclick="openLessonDetail('contoh-praktis')">
+                    <h3>Contoh Praktis</h3>
+                    <p>Aplikasi perbandingan senilai</p>
+                    <small>Level: Menengah</small>
+                </div>
+                <div class="lesson-card" onclick="openLessonDetail('latihan')">
+                    <h3>Latihan Soal</h3>
+                    <p>Uji pemahamanmu</p>
+                    <small>Level: Mahir</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Games Section -->
+    <div id="games" class="page">
+        <div class="card">
+            <h2>🎮 Permainan Perbandingan Senilai</h2>
+            <div class="game-grid">
+                <div class="game-card" onclick="showGameDetails('teka-teki')">
+                    <h3>Teka-Teki Matematika</h3>
+                    <p>Selesaikan teka-teki perbandingan</p>
+                </div>
+                <div class="game-card" onclick="showGameDetails('tantangan')">
+                    <h3>Tantangan Kecepatan</h3>
+                    <p>Hitung dengan cepat dan tepat</p>
+                </div>
+                <div class="game-card" onclick="showGameDetails('misi')">
+                    <h3>Misi Perbandingan</h3>
+                    <p>Selesaikan misi matematika</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Modals -->
+        <div id="teka-teki-modal" class="modal">
+            <div class="modal-content">
+                <span class="modal-close" onclick="closeGameModal('teka-teki')">&times;</span>
+                <div id="teka-teki-game" class="game-container">
+                    <h2>🧩 Teka-Teki Perbandingan Senilai</h2>
+                    <div id="teka-teki-question" class="game-question"></div>
+                    <input type="number" id="teka-teki-answer" class="game-input" placeholder="Masukkan jawaban Anda">
+                    <button onclick="checkTekaTekiAnswer()" class="game-button">Periksa Jawaban</button>
+                    <div id="teka-teki-feedback" class="game-feedback"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tantangan-modal" class="modal">
+            <div class="modal-content">
+                <span class="modal-close" onclick="closeGameModal('tantangan')">&times;</span>
+                <div id="tantangan-game" class="game-container">
+                    <h2>⏱️ Tantangan Kecepatan Perbandingan</h2>
+                    <div id="tantangan-question" class="game-question"></div>
+                    <input type="number" id="tantangan-answer" class="game-input" placeholder="Masukkan jawaban Anda">
+                    <div id="timer-display">Waktu: 30 detik</div>
+                    <button onclick="startTantanganGame()" class="game-button">Mulai Permainan</button>
+                    <button onclick="checkTantanganAnswer()" id="submit-tantangan" class="game-button" style="display:none;">Kirim Jawaban</button>
+                    <div id="tantangan-feedback" class="game-feedback"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="misi-modal" class="modal">
+            <div class="modal-content">
+                <span class="modal-close" onclick="closeGameModal('misi')">&times;</span>
+                <div id="misi-game" class="game-container">
+                    <h2>🚀 Misi Perbandingan</h2>
+                    <div id="misi-scenario" class="game-question"></div>
+                    <div id="misi-questions"></div>
+                    <div id="misi-score">Skor: 0/3</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lesson Modal -->
+    <div id="lessonModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeLessonModal()">&times;</span>
+            <h2>Detail Pelajaran</h2>
+            <div id="lesson-content"></div>
+        </div>
+    </div>
+
+    <script>
+        
+        // Navigation Functions
+        function showPage(pageId) {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+            
+            const selectedPage = document.getElementById(pageId);
+            selectedPage.classList.add('active');
+        }
+
+        function showLessonModal() {
+            const modal = document.getElementById('lessonModal');
+            modal.style.display = 'flex';
+        }
+
+        function closeLessonModal() {
+            const modal = document.getElementById('lessonModal');
+            modal.style.display = 'none';
+        }
+
+        function openLessonDetail(lessonType) {
+            const lessonContent = document.getElementById('lesson-content');
+            const lessons = {
+                'konsep-dasar': `
+                    <h3>Konsep Dasar Perbandingan Senilai</h3>
+                    <p>Perbandingan senilai adalah perbandingan antara dua besaran yang memiliki hubungan linier.</p>
+                    <p>Ciri-ciri:</p>
+                    <ul>
+                        <li>Jika salah satu besaran naik, besaran lainnya juga naik</li>
+                        <li>Memiliki perbandingan yang konstan</li>
+                    </ul>
+                `,
+                'contoh-praktis': `
+                    <h3>Contoh Praktis Perbandingan Senilai</h3>
+                    <p>Contoh: Hubungan antara kecepatan dan waktu tempuh</p>
+                    <p>Jika mobil menempuh 100 km dalam 2 jam, maka:</p>
+                    <ul>
+                        <li>200 km akan ditempuh dalam 4 jam</li>
+                        <li>50 km akan ditempuh dalam 1 jam</li>
+                        <li>Kecepatan tetap konstan: 50 km/jam</li>
+                    </ul>
+                `,
+                'latihan': `
+                    <h3>Latihan Soal Perbandingan Senilai</h3>
+                    <p>Uji pemahamanmu dengan mengerjakan soal-soal berikut:</p>
+                    <ol>
+                        <li>Jika 5 buku seharga Rp 25.000, berapa harga 15 buku?</li>
+                        <li>Sebuah mobil menempuh 120 km dalam 2 jam. Berapa lama waktu yang dibutuhkan untuk menempuh 360 km?</li>
+                        <li>2 orang pekerja dapat menyelesaikan proyek dalam 12 hari. Berapa lama 6 orang pekerja akan menyelesaikan proyek yang sama?</li>
+                    </ol>
+                `
+            };
+
+            lessonContent.innerHTML = lessons[lessonType];
+            showLessonModal();
+        }
+
+        
+
+        // Game Modal Functions
+        function showGameDetails(gameType) {
+            const modalMap = {
+                'teka-teki': 'teka-teki-modal',
+                'tantangan': 'tantangan-modal',
+                'misi': 'misi-modal'
+            };
+
+            const modal = document.getElementById(modalMap[gameType]);
+            modal.style.display = 'flex';
+
+            // Initialize specific game logic
+            switch(gameType) {
+                case 'teka-teki':
+                    loadTekaTekiQuestion();
+                    break;
+                case 'tantangan':
+                    // Optional: Prepare tantangan game initial state
+                    break;
+                case 'misi':
+                    loadMisiGame();
+                    break;
+            }
+        }
+
+        // Teka-Teki (Puzzle) Game Logic
+        function loadTekaTekiQuestion() {
+            const questions = [
+                { question: "Jika 3 buku seharga Rp 30.000, berapa harga 7 buku?", answer: 70000 },
+                { question: "Sebuah mobil menempuh 80 km dalam 2 jam. Berapa km dapat ditempuh dalam 5 jam?", answer: 200 },
+                { question: "1 kg gula pasir seharga Rp 15.000. Berapa harga 4,5 kg gula pasir?", answer: 67500 }
+            ];
+
+            const randomQuestion = questions[Math.floor(Math.random() * questions.length)];
+            document.getElementById('teka-teki-question').textContent = randomQuestion.question;
+            document.getElementById('teka-teki-question').dataset.answer = randomQuestion.answer;
+            document.getElementById('teka-teki-answer').value = '';
+            document.getElementById('teka-teki-feedback').textContent = '';
+        }
+
+        function checkTekaTekiAnswer() {
+            const userAnswer = parseFloat(document.getElementById('teka-teki-answer').value);
+            const correctAnswer = parseFloat(document.getElementById('teka-teki-question').dataset.answer);
+            const feedbackElement = document.getElementById('teka-teki-feedback');
+
+            if (userAnswer === correctAnswer) {
+                feedbackElement.textContent = "🎉 Selamat! Jawaban Anda benar!";
+                feedbackElement.classList.add('correct-feedback');
+                feedbackElement.classList.remove('incorrect-feedback');
+                setTimeout(loadTekaTekiQuestion, 2000);
+            } else {
+                feedbackElement.textContent = "❌ Maaf, jawaban Anda salah. Coba lagi!";
+                feedbackElement.classList.add('incorrect-feedback');
+                feedbackElement.classList.remove('correct-feedback');
+            }
+        }
+
+        // Tantangan (Challenge) Game Logic
+        let tantanganTimer;
+        let tantanganTimeLeft = 30;
+
+        function startTantanganGame() {
+            const questions = [
+                { question: "Hitung 4/5 dari 250", answer: 200 },
+                { question: "Berapa 3/4 dari 120?", answer: 90 },
+                { question: "Hitung 2/3 dari 180", answer: 120 }
+            ];
+
+            const randomQuestion = questions[Math.floor(Math.random() * questions.length)];
+            document.getElementById('tantangan-question').textContent = randomQuestion.question;
+            document.getElementById('tantangan-question').dataset.answer = randomQuestion.answer;
+            document.getElementById('tantangan-answer').value = '';
+            document.getElementById('tantangan-feedback').textContent = '';
+
+            tantanganTimeLeft = 30;
+            document.getElementById('timer-display').textContent = `Waktu: ${tantanganTimeLeft} detik`;
+            document.getElementById('submit-tantangan').style.display = 'inline-block';
+
+            tantanganTimer = setInterval(() => {
+                tantanganTimeLeft--;
+                document.getElementById('timer-display').textContent = `Waktu: ${tantanganTimeLeft} detik`;
+
+                if (tantanganTimeLeft <= 0) {
+                    clearInterval(tantanganTimer);
+                    endTantanganGame(false);
+                }
+            }, 1000);
+        }
+
+        function checkTantanganAnswer() {
+            clearInterval(tantanganTimer);
+            const userAnswer = parseFloat(document.getElementById('tantangan-answer').value);
+            const correctAnswer = parseFloat(document.getElementById('tantangan-question').dataset.answer);
+            const feedbackElement = document.getElementById('tantangan-feedback');
+
+            if (userAnswer === correctAnswer) {
+                endTantanganGame(true);
+            } else {
+                endTantanganGame(false);
+            }
+        }
+
+        function endTantanganGame(isWin) {
+            const feedbackElement = document.getElementById('tantangan-feedback');
+            const submitButton = document.getElementById('submit-tantangan');
+
+            if (isWin) {
+                feedbackElement.textContent = "🏆 Selamat! Anda menang!";
+                feedbackElement.classList.add('correct-feedback');
+                feedbackElement.classList.remove('incorrect-feedback');
+            } else {
+                feedbackElement.textContent = "❌ Waktu habis atau jawaban salah. Coba lagi!";
+                feedbackElement.classList.add('incorrect-feedback');
+                feedbackElement.classList.remove('correct-feedback');
+            }
+
+            submitButton.style.display = 'none';
+            setTimeout(() => {
+                document.getElementById('timer-display').textContent = 'Waktu: 30 detik';
+            }, 2000);
+        }
+
+        // Misi (Mission) Game Logic
+        function loadMisiGame() {
+            const scenarios = [
+                {
+                    scenario: "Sebuah pabrik dapat memproduksi 120 barang dalam 3 hari.",
+                    questions: [
+                        { q: "Berapa barang yang diproduksi dalam 1 hari?", a: 40 },
+                        { q: "Berapa hari dibutuhkan untuk memproduksi 240 barang?", a: 6 },
+                        { q: "Berapa barang yang diproduksi dalam 4,5 hari?", a: 180 }
+                    ]
+                },
+                {
+                    scenario: "Sebuah truk dapat mengangkut 150 kg barang dalam satu perjalanan.",
+                    questions: [
+                        { q: "Berapa kg barang yang diangkut dalam 2,5 perjalanan?", a: 375 },
+                        { q: "Berapa perjalanan dibutuhkan untuk mengangkut 450 kg?", a: 3 },
+                        { q: "Berapa kg barang yang diangkut dalam 0,5 perjalanan?", a: 75 }
+                    ]
+                }
+            ];
+
+            const selectedScenario = scenarios[Math.floor(Math.random() * scenarios.length)];
+            const misiScenario = document.getElementById('misi-scenario');
+            const misiQuestions = document.getElementById('misi-questions');
+            const misiScore = document.getElementById('misi-score');
+
+            misiScenario.textContent = selectedScenario.scenario;
+            misiQuestions.innerHTML = selectedScenario.questions.map((q, index) => `
+                <div>
+                    <p>${q.q}</p>
+                    <input type="number" id="misi-answer-${index}" class="game-input" placeholder="Jawab di sini">
+                    <button onclick="checkMisiAnswer(${index}, ${q.a})" class="game-button">Periksa</button>
+                    <span id="misi-feedback-${index}"></span>
+                </div>
+            `).join('');
+
+            misiScore.textContent = 'Skor: 0/3';
+        }
+
+        function checkMisiAnswer(questionIndex, correctAnswer) {
+            const answerInput = document.getElementById(`misi-answer-${questionIndex}`);
+            const feedbackElement = document.getElementById(`misi-feedback-${questionIndex}`);
+            const userAnswer = parseFloat(answerInput.value);
+
+            if (userAnswer === correctAnswer) {
+                feedbackElement.textContent = "✅ Benar!";
+                feedbackElement.style.color = 'green';
+                answerInput.disabled = true;
+            } else {
+                feedbackElement.textContent = "❌ Salah, coba lagi!";
+                feedbackElement.style.color = 'red';
+            }
+
+            updateMisiScore();
+        }
+
+        function updateMisiScore() {
+            const feedbackElements = document.querySelectorAll('[id^="misi-feedback-"]');
+            const correctAnswers = Array.from(feedbackElements).filter(el => el.textContent === "✅ Benar!").length;
+            document.getElementById('misi-score').textContent = `Skor: ${correctAnswers}/3`;
+        }
+
+        function closeGameModal(gameType) {
+            const modalMap = {
+                'teka-teki': 'teka-teki-modal',
+                'tantangan': 'tantangan-modal',
+                'misi': 'misi-modal'
+            };
+// Reset game states
+if (gameType === 'tantangan') {
+                clearInterval(tantanganTimer);
+                document.getElementById('timer-display').textContent = 'Waktu: 30 detik';
+                document.getElementById('submit-tantangan').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

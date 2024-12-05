@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Persiapan Ujian Online</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="p-8">
+                <h1 class="text-3xl font-bold text-center mb-6">Persiapan Ujian Online</h1>
+                <div class="space-y-4 mb-8">
+                    <p class="text-lg">Sebelum memulai ujian, mohon perhatikan hal-hal berikut:</p>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li>Pastikan Anda berada di tempat yang tenang dan nyaman.</li>
+                        <li>Siapkan alat tulis jika diperlukan untuk membuat catatan.</li>
+                        <li>Pastikan koneksi internet Anda stabil.</li>
+                        <li>Matikan notifikasi pada perangkat Anda untuk menghindari gangguan.</li>
+                        <li>Baca setiap soal dengan teliti sebelum menjawab.</li>
+                        <li>Jika Anda mengalami kesulitan, tetap tenang dan lakukan yang terbaik.</li>
+                    </ul>
+                    <p class="text-lg font-semibold mt-4">Luangkan waktu sejenak untuk menenangkan diri dan berdoa sesuai keyakinan Anda.</p>
+                </div>
+                <div class="text-center">
+                    <button id="start-exam" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Saya Siap Memulai Ujian
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('start-exam').addEventListener('click', function() {
+            // In a real application, you might want to add some validation or 
+            // server-side check before redirecting
+            window.location.href = 'ujian.html'; // Redirect to the exam page
+        });
+    </script>
+</body>
+</html>
